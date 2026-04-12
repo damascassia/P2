@@ -7,6 +7,6 @@ namespace BibliotecaXPTOLibs.Repositories.Interfaces
 {
     public interface IObrasRepository
     {
-       
+        int Insert(CreateObraDTO dto, string tagRepo);
     }
 }
