@@ -1,4 +1,7 @@
 using System.Text;
+using BibliotecaXPTOLibs.Helpers;
+using BibliotecaXPTOLibs.Helpers.Interfaces;
+using BibliotecaXPTOLibs.Repositories;
 using BibliotecaXPTOLibs.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -47,8 +50,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
 
-        ValidIssuer = "CarrosDB",
-        ValidAudience = "CarrosDB",
+        ValidIssuers = new[] { "BibliotecaPazu", "BibliotecaXPTO" },
+        ValidAudiences = new[] { "BibliotecaPazu", "BibliotecaXPTO" },
 
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
@@ -88,7 +91,8 @@ builder.Services.AddSwaggerGen(c =>
 
 //DI (Dependency Injection)
 
-builder.Services.AddScoped<IObrasRepository, IObrasRepository>();
+builder.Services.AddScoped<IObrasRepository, ObrasRepository>();
+builder.Services.AddScoped<IConnectionHelper, ConnectionHelper>();
 
 builder.Services.AddAuthorization();
 
