@@ -12,8 +12,7 @@ namespace BibliotecaXPTOLibs.DTOs
 
         public string Titulo { get; set; }
 
-        public int Assunto_Id { get; set; }
+        public int Assunto { get; set; }
 
-        public string Assunto { get; set;}  
     }
 }

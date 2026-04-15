@@ -1,8 +1,11 @@
 using System.Text;
+using BibliotecaXPTOLibs.DTOs;
 using BibliotecaXPTOLibs.Helpers;
 using BibliotecaXPTOLibs.Helpers.Interfaces;
 using BibliotecaXPTOLibs.Repositories;
 using BibliotecaXPTOLibs.Repositories.Interfaces;
+using BlibliotecaXPTO_WebAPI.Services;
+using BlibliotecaXPTO_WebAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -92,6 +95,7 @@ builder.Services.AddSwaggerGen(c =>
 //DI (Dependency Injection)
 
 builder.Services.AddScoped<IObrasRepository, ObrasRepository>();
+builder.Services.AddScoped<IObraService, ObraService>();
 builder.Services.AddScoped<IConnectionHelper, ConnectionHelper>();
 
 builder.Services.AddAuthorization();
@@ -108,6 +112,23 @@ app.UseAuthorization();
 
 
 // Configure the HTTP request pipeline. (Configurção de endpoints)
+
+app.MapGet("/", () => "Biblioteca API");
+
+
+app.MapPost("/Obras", (CreateObraDTO dto, IObraService service) =>
+{
+    return service.Create(dto);
+});
+//.RequireAuthorization();
+
+app.MapDelete("/Obras/{id}", (int id, IObraService service) =>
+{
+    return service.Delete(id);
+});
+//.RequireAuthorization();
+
+
 
 app.UseHttpsRedirection();
 

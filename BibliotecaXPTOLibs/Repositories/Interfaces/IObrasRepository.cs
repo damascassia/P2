@@ -8,5 +8,9 @@ namespace BibliotecaXPTOLibs.Repositories.Interfaces
     public interface IObrasRepository
     {
         int Insert(CreateObraDTO dto, string tagRepo);
+
+        bool Update(int id, CreateObraDTO dto, string tagRepo);
+
+        bool Delete(int id, string tagRepo);
     }
 }
