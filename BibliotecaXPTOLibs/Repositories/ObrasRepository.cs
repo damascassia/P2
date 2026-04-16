@@ -15,9 +15,12 @@ namespace BibliotecaXPTOLibs.Repositories
     public class ObrasRepository : IObrasRepository
     {
         private readonly IConnectionHelper _connectionHelper;
-        public ObrasRepository(IConnectionHelper connection)
+
+        private readonly IAssuntoRepository _assuntoRepository;
+        public ObrasRepository(IConnectionHelper connection, IAssuntoRepository assuntoRepository   )
         {
             _connectionHelper = connection;
+            _assuntoRepository = assuntoRepository;
         }
 
         public ObraDTO? GetById(int id, string tagRepo)
@@ -92,7 +95,14 @@ namespace BibliotecaXPTOLibs.Repositories
 
         public bool Update(int id, CreateObraDTO dto, string tagRepo)
         {
-            
+            var obra = GetById(id, tagRepo);
+
+            if (obra is null) return false;
+
+            var assunto = _assuntoRepository.GetById(dto.Assunto_Id, tagRepo);
+
+            if (assunto is null) return false;
+
             string connection = _connectionHelper.getConnectionString(tagRepo);
 
             string sql = @"UPDATE Obras SET
