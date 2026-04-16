@@ -2,6 +2,5 @@
 {
     public interface IObraService
     {
-        IEnumerable<ObraDTO> ObterObrasDisp(string pesquisa);
-    }
+           }
 }
