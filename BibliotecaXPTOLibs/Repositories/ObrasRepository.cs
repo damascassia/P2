@@ -16,7 +16,29 @@ namespace BibliotecaXPTOLibs.Repositories
         public ObrasRepository(IConnectionHelper connection)
         {
             _connectionHelper = connection;
+            DalPro.ConnectionString = _connectionHelper.getConnectionString("DB_Biblioteca");
         }
-       
+        public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo = null, string assunto = null)
+        {
+            var dt = DalPro.ExecuteSP("sp_ObrasDisponiveis", new Dictionary<string, object>
+            {
+                { "@NomeNucleo", nomeNucleo },  // null é mapeado para DBNull pelo DalPro
+                { "@Assunto",    assunto    }
+            });
+
+            var lista = new List<ObraDisponivelDTO>();
+            foreach (System.Data.DataRow row in dt.Rows)
+            {
+                lista.Add(new ObraDisponivelDTO
+                {
+                    Titulo = row["Titulo"].ToString(),
+                    Autor = row["Autor"].ToString()
+                });
+            }
+
+            return lista;
+        }
     }
 }
+       
+
