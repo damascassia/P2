@@ -1,12 +1,17 @@
-using System.Text;
+using BibliotecaXPTOLibs.DTOs;
+using BibliotecaXPTOLibs.Models;
 using BibliotecaXPTOLibs.Helpers;
 using BibliotecaXPTOLibs.Helpers.Interfaces;
 using BibliotecaXPTOLibs.Repositories;
 using BibliotecaXPTOLibs.Repositories.Interfaces;
+using BlibliotecaXPTO_WebAPI.Services;
+using BlibliotecaXPTO_WebAPI.Services.Interfaces;
+using DalProLib;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Text;
 
 //Logger
 
@@ -57,7 +62,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     };
 });
 
+
+
+//Conection
+
+//DalPro.ConnectionString = builder.Configuration.GetConnectionString("BibliotecaXPTO");
+
+//if (string.IsNullOrEmpty(DalPro.ConnectionString) || !DalPro.TryConnect())
+//{
+//    DalPro.ConnectionString = builder.Configuration.GetConnectionString("BibliotecaPazu2");
+
+//    if (string.IsNullOrEmpty(DalPro.ConnectionString) || !DalPro.TryConnect())
+//    {
+//        throw new Exception("Nenhuma connection string válida encontrada");
+//    }
+//}
 //Swagger
+
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -86,13 +107,17 @@ builder.Services.AddSwaggerGen(c =>
             },
             new string[] {}
         }
-    });
+    }
+    
+    );
 });
 
 //DI (Dependency Injection)
 
 builder.Services.AddScoped<IObrasRepository, ObrasRepository>();
 builder.Services.AddScoped<IConnectionHelper, ConnectionHelper>();
+builder.Services.AddScoped<IUtilizadoresRepository, UtilizadoresRepository>();
+builder.Services.AddScoped<IUtilizadoresService, UtilizadoresService>();
 
 builder.Services.AddAuthorization();
 
@@ -111,8 +136,12 @@ app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
+app.MapPost("/Utilizadores", (AlterarStatusDTO dto, IUtilizadoresService service) =>
+{
+    service.AlterarStatus(dto.UtilizadorId, dto);
 
-
+    return Results.Ok(new { Mensagem = "Status alterado com sucesso" }); ;
+});
 
 
 app.Run();

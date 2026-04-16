@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
+	<RollForward>Major</RollForward>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -11,7 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="BibliotecaXPTOLibs.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.14" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.6" />
@@ -21,6 +27,9 @@
   <ItemGroup>
     <Reference Include="BibliotecaXPTOLibs">
       <HintPath>..\BibliotecaXPTOLibs\bin\Debug\net9.0\BibliotecaXPTOLibs.dll</HintPath>
+    </Reference>
+    <Reference Include="DalProLib">
+      <HintPath>..\DalProLib\obj\Debug\net9.0\DalProLib.dll</HintPath>
     </Reference>
   </ItemGroup>
 

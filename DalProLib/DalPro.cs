@@ -16,6 +16,19 @@ namespace DalProLib
         {
             return new SqlConnection(ConnectionString); 
         }
+        public static bool TryConnect()
+        {
+            try
+            {
+                using var cn = GetConnection();
+                cn.Open();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         // --------------------------------------------------
         // CREATE COMMAND - método para criar comando
