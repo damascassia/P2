@@ -11,9 +11,9 @@ namespace BibliotecaXPTOLibs.Helpers
 
         public string getConnectionString(string tagRepo)
         {
-            if (tagRepo == "DB_Carros")
+            if (tagRepo == "DB_Biblioteca")
             {
-                _connectionstring = "Server=LAPTOP-09V2MV7K\\SQLSERVER;Database=CarrosDB;Trusted_Connection=True;TrustServerCertificate=True";
+                _connectionstring = "Server=.\\SQLSERVER;Database=BibliotecaPazu;Trusted_Connection=True;TrustServerCertificate=True";
             }
 
             return _connectionstring;

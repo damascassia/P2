@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.14" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.6" />
@@ -21,6 +22,9 @@
   <ItemGroup>
     <Reference Include="BibliotecaXPTOLibs">
       <HintPath>..\BibliotecaXPTOLibs\bin\Debug\net9.0\BibliotecaXPTOLibs.dll</HintPath>
+    </Reference>
+    <Reference Include="LibDB">
+      <HintPath>..\..\..\..\..\..\UPSkill\LibDB\bin\Debug\net9.0\LibDB.dll</HintPath>
     </Reference>
   </ItemGroup>
 

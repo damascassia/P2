@@ -22,7 +22,7 @@ namespace BibliotecaXPTOLibs.Repositories
         {
             var dt = DalPro.ExecuteSP("sp_ObrasDisponiveis", new Dictionary<string, object>
             {
-                { "@NomeNucleo", nomeNucleo },  // null é mapeado para DBNull pelo DalPro
+                { "@NomeNucleo", nomeNucleo },  
                 { "@Assunto",    assunto    }
             });
 
