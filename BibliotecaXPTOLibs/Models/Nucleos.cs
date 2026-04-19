@@ -4,7 +4,8 @@ using System.Text;
 
 namespace BibliotecaXPTOLibs.Models
 {
-    public class Nucleos1
+    public class Nucleos
+
     {
         public int Id { get; set; }
         public string Nome { get; set; }
