@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="DalProLib">
       <HintPath>..\DalProLib\bin\Debug\net9.0\DalProLib.dll</HintPath>
     </Reference>
