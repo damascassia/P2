@@ -8,20 +8,20 @@ namespace BibliotecaXPTOLibs.DTOs
 {
     public class EmprestimoDTO
     {
-        public string LeitorDoc { get; set; }   // Número de documento do leitor
-        public int ExemplarId { get; set; }     // ID do exemplar a requisitar
+        public string LeitorDoc { get; set; }   
+        public int ExemplarId { get; set; }     
     }
 
 
     public class DevolucaoDTO
     {
-        public int ExemplarId { get; set; }     // ID do exemplar a devolver
+        public int ExemplarId { get; set; }     
     }
 
     public class EmprestimoAtivoDTO
     {
         public int Id { get; set; }
-        public string StatusEmprestimo { get; set; }  // "Atraso", "Devolução Urgente", "Devolver em breve", "Dentro do Prazo", "Entregue"
+        public string StatusEmprestimo { get; set; }  
     }
 }
 

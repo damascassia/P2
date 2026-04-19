@@ -13,7 +13,7 @@ namespace BibliotecaXPTOLibs.Helpers
         {
             if (tagRepo == "DB_Biblioteca")
             {
-                _connectionstring = "Server=.\\SQLSERVER;Database=BibliotecaPazu;Trusted_Connection=True;TrustServerCertificate=True";
+                _connectionstring = "Server=localhost;Database=BibliotecaPazu;Trusted_Connection=True;TrustServerCertificate=True";
             }
 
             return _connectionstring;

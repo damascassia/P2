@@ -9,9 +9,7 @@ using Serilog;
 using BibliotecaXPTOLibs.Helpers.Interfaces;
 using BibliotecaXPTOLibs.Repositories;
 using BibliotecaXPTOLibs.Helpers;
-// Add this using directive at the top of your file
 
-// No changes needed in the existing code, just ensure the above namespace is included.
 
 
 
@@ -83,8 +81,6 @@ builder.Services.AddScoped<IObrasRepository, ObrasRepository>();
 builder.Services.AddScoped<IObraService, ObraService>();
 
 
-//builder.Services.AddScoped<IEmprestimosRepository, EmprestimosRepository>();
-//builder.Services.AddScoped<IEmprestimosService, EmprestimosService>();
 
 builder.Services.AddAuthorization();
 
@@ -112,43 +108,6 @@ app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, IObraService 
 })
 .WithName("PesquisarObrasDisponiveis");
 
-
-
-/*app.MapPost("/emprestimos/requisicao", (RequisicaoDTO dto, IEmprestimosService service) =>
-{
-    var (sucesso, mensagem) = service.RealizarRequisicao(dto);
-    return sucesso
-        ? Results.Ok(new { mensagem })
-        : Results.BadRequest(new { mensagem });
-})
-.RequireAuthorization()
-.WithName("RealizarRequisicao")
-.WithOpenApi();
-
-
-app.MapPost("/emprestimos/devolucao", (DevolucaoDTO dto, IEmprestimosService service) =>
-{
-    var (sucesso, mensagem) = service.RealizarDevolucao(dto);
-    return sucesso
-        ? Results.Ok(new { mensagem })
-        : Results.BadRequest(new { mensagem });
-})
-.RequireAuthorization()
-.WithName("RealizarDevolucao")
-.WithOpenApi();
-
-
-
-app.MapGet("/emprestimos/ativos/{leitorId:int}", (int leitorId, IEmprestimosService service) =>
-{
-    var (sucesso, mensagem, dados) = service.ObterEmprestimosAtivos(leitorId);
-    return sucesso
-        ? Results.Ok(dados)
-        : Results.BadRequest(new { mensagem });
-})
-.RequireAuthorization()
-.WithName("ObterEmprestimosAtivos")
-.WithOpenApi();*/
 
 
 app.Run();
