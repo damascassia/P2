@@ -86,6 +86,8 @@ builder.Services.AddScoped<IObrasRepository, ObrasRepository>();
 builder.Services.AddScoped<IObraService, ObraService>();
 builder.Services.AddScoped<IEmprestimosRepository, EmprestimosRepository>();
 builder.Services.AddScoped<IEmprestimosService, EmprestimosService>();
+builder.Services.AddScoped<ILeitoresRepository, LeitoresRepository>();
+builder.Services.AddScoped<ILeitoresService, LeitoresService>();
 
 
 
@@ -103,19 +105,11 @@ app.UseHttpsRedirection();
 
 
 
-app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, IObraService service) =>
+app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, [FromServices] IObraService service) =>
 {
-    var (sucesso, mensagem, dados) = service.PesquisarObrasDisponiveis(nucleo, assunto);
-
-    if (!sucesso)
-        return Results.BadRequest(new { mensagem });
-
-    if (dados.Count == 0)
-        return Results.Ok(new { mensagem, dados });
-
-    return Results.Ok(dados);
-})
-.WithName("PesquisarObrasDisponiveis");
+    var obras = service.PesquisarObrasDisponiveis(nucleo, assunto);
+    return Results.Ok(obras);
+});
 
 
 
@@ -153,6 +147,20 @@ app.MapPost("/emprestimos/devolucao", (DevolucaoDTO dto, [FromServices] IEmprest
     {
         service.RealizarDevolucao(dto);
         return Results.Ok(new { mensagem = "Devolução registada com sucesso." });
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { mensagem = ex.Message });
+    }
+})
+.RequireAuthorization();
+
+app.MapPost("/leitores/{leitorId:int}/inscricao/cancelar", (int leitorId, [FromServices] ILeitoresService service) =>
+{
+    try
+    {
+        service.CancelarInscricao(leitorId);
+        return Results.Ok(new { mensagem = "Inscrição cancelada com sucesso. Todos os exemplares foram devolvidos." });
     }
     catch (Exception ex)
     {

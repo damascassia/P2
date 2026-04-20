@@ -7,34 +7,19 @@ namespace BlibliotecaXPTO_WebAPI.Services
 {
     public class ObraService : IObraService
     {
-        private readonly IObrasRepository _obrasRepository;
+        private readonly IObrasRepository _repo;
+        private readonly ILogger _logger;
 
-        public ObraService(IObrasRepository obrasRepository)
+        public ObraService(ILogger<ObraService> logger, IObrasRepository repo)
         {
-            _obrasRepository = obrasRepository;
+            _repo = repo;
+            _logger = logger;
         }
 
-    
-        public (bool Sucesso, string Mensagem, List<ObraDisponivelDTO> Dados) PesquisarObrasDisponiveis(
-            string nomeNucleo, string assunto)
+        public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo, string assunto)
         {
-            try
-            {
-                var dados = _obrasRepository.PesquisarObrasDisponiveis(nomeNucleo, assunto);
-
-                if (dados.Count == 0)
-                    return (true, "Nenhuma obra disponível para os filtros indicados.", dados);
-
-                return (true, "OK", dados);
-            }
-            catch (SqlException ex)
-            {
-                return (false, ex.Message, null);
-            }
-            catch (Exception ex)
-            {
-                return (false, $"Erro inesperado: {ex.Message}", null);
-            }
+            _logger.LogInformation($"Pesquisa obras: nucleo={nomeNucleo} assunto={assunto}");
+            return _repo.PesquisarObrasDisponiveis(nomeNucleo, assunto);
         }
     }
-}
+    }
