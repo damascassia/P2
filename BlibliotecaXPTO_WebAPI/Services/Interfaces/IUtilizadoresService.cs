@@ -10,7 +10,10 @@ namespace BlibliotecaXPTO_WebAPI.Services.Interfaces
 {
     public interface IUtilizadoresService 
     {
-        public void AlterarStatus(int Id, AlterarStatusDTO dto, SqlTransaction trans = null);
+        public void AlterarStatus(int Id, AlterarStatusDTO dto);
+        public void DeleteLeitorAntigo();
+        public void RegistrarUtilizador(RegistrarUtilizadorDTO u);
+
     }
 }
 

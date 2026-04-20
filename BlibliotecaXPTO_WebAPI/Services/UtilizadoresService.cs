@@ -5,6 +5,8 @@ using BibliotecaXPTOLibs.Repositories.Interfaces;
 using BlibliotecaXPTO_WebAPI.Services.Interfaces;
 using DalProLib;
 using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 
 namespace BlibliotecaXPTO_WebAPI.Services
@@ -12,25 +14,78 @@ namespace BlibliotecaXPTO_WebAPI.Services
     public class UtilizadoresService : IUtilizadoresService
     {
         private readonly IUtilizadoresRepository _repo;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UtilizadoresService(ILogger<UtilizadoresService> logger, IUtilizadoresRepository repo)
+        public UtilizadoresService(ILogger<UtilizadoresService> logger, IUtilizadoresRepository repo, IHttpContextAccessor httpContextAccessor)
         {
             _repo = repo;
+            _httpContextAccessor = httpContextAccessor;
         }
-        public void AlterarStatus(int Id, AlterarStatusDTO dto, SqlTransaction trans = null)
+        private EnumRoles GetUserRole()
         {
-            trans = DalPro.BeginTransaction();
-            try 
+            var httpContext = _httpContextAccessor.HttpContext;
+
+            var roleString = httpContext?
+                .User?
+                .FindFirst(ClaimTypes.Role)?
+                .Value;
+
+            if (string.IsNullOrEmpty(roleString))
+                throw new Exception("Role não encontrada no token");
+
+            return Enum.Parse<EnumRoles>(roleString);
+        }
+        public void AlterarStatus(int Id, AlterarStatusDTO dto)
+        {
+            var role = GetUserRole();
+
+            if (role == EnumRoles.Leitor)
+                throw new UnauthorizedAccessException();
+
+            _repo.InitConnection();
+            var trans = DalPro.BeginTransaction();
+            try
             {
-                Utilizadores u = new Utilizadores
-                {
-                    Id = Id,
-                    Id_Status = (int)dto.NovoStatusId
-                };
-                _repo.AlterarStatus(u.Id, u.Id_Status, trans);
+                _repo.AlterarStatus(Id, (int)dto.NovoStatusId, trans);
                 DalPro.Commit(trans);
             }
-            catch 
+            catch
+            {
+                 DalPro.Rollback(trans);
+                 throw;
+            }
+        }
+
+        public void DeleteLeitorAntigo()
+        {
+            var role = GetUserRole();
+
+            if (role == EnumRoles.Leitor)
+                throw new UnauthorizedAccessException();
+            _repo.DeleteLeitoresAntigos();
+
+        }
+        public void RegistrarUtilizador(RegistrarUtilizadorDTO u)
+        {
+            var role = GetUserRole();
+            if (role == EnumRoles.Leitor)
+            {
+                if (u.Id_TipoUser != (int)EnumRoles.Leitor)
+                    throw new UnauthorizedAccessException();
+            }
+            if (role == EnumRoles.Bibli)
+            {
+                if (u.Id_TipoUser == (int)EnumRoles.Admin)
+                    throw new UnauthorizedAccessException();
+            }
+            _repo.InitConnection();
+            var trans = DalPro.BeginTransaction();
+            try
+            {
+                _repo.RegistrarUtilizador(u, trans);
+                DalPro.Commit(trans);
+            }
+            catch
             {
                 DalPro.Rollback(trans);
                 throw;
