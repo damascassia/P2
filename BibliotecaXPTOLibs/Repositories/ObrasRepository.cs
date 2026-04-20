@@ -243,8 +243,8 @@ namespace BibliotecaXPTOLibs.Repositories
                 throw new Exception($"Erro inesperado: {ex}");
             }
         }
-            DalPro.ConnectionString = _connectionHelper.getConnectionString("DB_Biblioteca");
-        }
+           
+        
         public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo = null, string assunto = null)
         {
             var dt = DalPro.ExecuteSP("sp_ObrasDisponiveis", new Dictionary<string, object>
