@@ -128,6 +128,7 @@ builder.Services.AddSwaggerGen(c =>
 //DI (Dependency Injection)
 
 builder.Services.AddScoped<IObrasRepository, ObrasRepository>();
+builder.Services.AddScoped<IObraService, ObraService>();
 builder.Services.AddScoped<IConnectionHelper, ConnectionHelper>();
 builder.Services.AddScoped<IUtilizadoresRepository, UtilizadoresRepository>();
 builder.Services.AddScoped<IUtilizadoresService, UtilizadoresService>();
@@ -148,6 +149,29 @@ app.UseAuthorization();
 
 
 // Configure the HTTP request pipeline. (Configurção de endpoints)
+
+app.MapGet("/", () => "Biblioteca API");
+
+
+app.MapPost("/Obras", (CreateObraDTO dto, IObraService service) =>
+{
+    return service.Create(dto);
+});
+//.RequireAuthorization();
+
+app.MapDelete("/Obras/{id}", (int id, IObraService service) =>
+{
+    return service.Delete(id);
+});
+//.RequireAuthorization();
+
+app.MapPut("/Obras/{id}", (int id, CreateObraDTO dto, IObraService service) =>
+{
+    return service.Update(id, dto);
+});
+//.RequireAuthorization();
+
+
 
 app.UseHttpsRedirection();
 
