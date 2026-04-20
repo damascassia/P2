@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace BibliotecaXPTOLibs.DTOs
 {
-    internal class CreateObraDTO
+    public class CreateObraDTO
     {
+        public object Autor { get; internal set; }
+        public object Titulo { get; internal set; }
+        public object Assunto_Id { get; internal set; }
     }
 }

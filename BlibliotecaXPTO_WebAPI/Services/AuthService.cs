@@ -41,7 +41,7 @@ namespace BlibliotecaXPTO_WebAPI.Services
                     new Claim(ClaimTypes.Name, username),
                     new Claim(ClaimTypes.Role, ((EnumRoles)int.Parse(userRole)).ToString()),
                     new Claim("Plataforma", "BibliotecaXPTO"),
-                    new Claim("Plataforma2", "BibliotecaPaz"),
+                    new Claim("Plataforma2", "BibliotecaPazu"),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
 

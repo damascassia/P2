@@ -12,9 +12,10 @@ namespace BibliotecaXPTOLibs.Repositories
     public interface IUtilizadoresRepository
     {
         public void AlterarStatus(int Id, int StatusId, SqlTransaction trans = null);
+        public void InitConnection();
         public int GetStatusID(int Id, SqlTransaction trans);
-
-
+        public void DeleteLeitoresAntigos(SqlTransaction trans = null);
+        public int RegistrarUtilizador(RegistrarUtilizadorDTO u, SqlTransaction trans);
 
     }
 }

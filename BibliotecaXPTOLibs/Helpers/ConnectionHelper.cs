@@ -18,7 +18,7 @@ namespace BibliotecaXPTOLibs.Helpers
 
             if (tagRepo == "DB_BibliotecaXPTO")
             {
-                _connectionstring = "Server=.\\SQLSERVER;Database=BibliotecaXPTO;Trusted_Connection=True;TrustServerCertificate=True";
+                _connectionstring = "Server=LAPTOP-BTNU7VGH\\mssqlserver01;Database=BibliotecaXPTO;Trusted_Connection=True;TrustServerCertificate=True";
             }
 
             return _connectionstring;

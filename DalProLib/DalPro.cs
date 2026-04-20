@@ -12,10 +12,11 @@ namespace DalProLib
             new Dictionary<Type, PropertyInfo[]>();
         
 
-        public static SqlConnection GetConnection() 
+       public static SqlConnection GetConnection() 
         {
             return new SqlConnection(ConnectionString); 
         }
+ 
         public static bool TryConnect()
         {
             try
