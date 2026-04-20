@@ -134,6 +134,9 @@ builder.Services.AddScoped<IUtilizadoresRepository, UtilizadoresRepository>();
 builder.Services.AddScoped<IUtilizadoresService, UtilizadoresService>();
 builder.Services.AddScoped<ILoginHelper, LoginHelper>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IMetricsRepository, MetricsRepository>();
+builder.Services.AddScoped<IMetricsService, MetricsService>();
+builder.Services.AddScoped<IAssuntoRepository, AssuntoRepository>();
 
 builder.Services.AddHttpContextAccessor();
 
