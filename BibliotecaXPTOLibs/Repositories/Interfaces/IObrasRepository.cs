@@ -9,9 +9,13 @@ namespace BibliotecaXPTOLibs.Repositories.Interfaces
     {
         ObraDTO? GetById(int id, string tagRepo);
 
+        List<HistObrasDTO> GetHistorico(RequestHistObrasDTO dto, string tagRepo);
+
         int Insert(CreateObraDTO dto, string tagRepo);
 
         bool Update(int id, CreateObraDTO dto, string tagRepo);
+
+        int UpdateCount(int id, string tagRepo);
 
         bool Delete(int id, string tagRepo);
     }
