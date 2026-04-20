@@ -23,6 +23,9 @@
     <Reference Include="BibliotecaXPTOLibs">
       <HintPath>..\BibliotecaXPTOLibs\bin\Debug\net9.0\BibliotecaXPTOLibs.dll</HintPath>
     </Reference>
+    <Reference Include="LibDB">
+      <HintPath>..\..\..\..\..\..\UPSkill\LibDB\bin\Debug\net9.0\LibDB.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
