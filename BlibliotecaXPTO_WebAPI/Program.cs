@@ -214,6 +214,35 @@ app.MapPost("/Utilizadores/registrar-utilizador",
     })
 .RequireAuthorization("TodosAutenticados");
 
+app.MapGet("/TopBooks", (DateTime dataInicio, DateTime dataFim, IMetricsService service) =>
+{
+    return Results.Ok(service.GetTopBooks(dataInicio, dataFim));
+})
+    .RequireAuthorization("TodosAutenticados");
+
+app.MapGet("/BottomBooks", (DateTime dataInicio, DateTime dataFim, IMetricsService service) =>
+{
+    return Results.Ok(service.GetBottomBooks(dataInicio, dataFim));
+})
+    .RequireAuthorization("TodosAutenticados");
+
+app.MapGet("/BottomEmprestimosNucleo", (DateTime dataInicio, DateTime dataFim, IMetricsService service) =>
+{
+    return Results.Ok(service.GetBottomEmprestimos(dataInicio, dataFim));
+})
+    .RequireAuthorization("TodosAutenticados");
+
+app.MapGet("/TopEmprestimosNucleo", (DateTime dataInicio, DateTime dataFim, IMetricsService service) =>
+{
+    return Results.Ok(service.GetTopEmprestimos(dataInicio, dataFim));
+})
+    .RequireAuthorization("TodosAutenticados");
+
+app.MapGet("/TopLeitores", (DateTime dataInicio, DateTime dataFim, IMetricsService service) =>
+{
+    return Results.Ok(service.GetTopLeitores(dataInicio, dataFim));
+})
+    .RequireAuthorization("TodosAutenticados");
 
 
 app.Run();
