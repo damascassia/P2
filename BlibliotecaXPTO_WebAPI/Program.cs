@@ -10,9 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using BibliotecaXPTOLibs.Helpers.Interfaces;
-using BibliotecaXPTOLibs.Repositories;
-using BibliotecaXPTOLibs.Helpers;
+
 
 
 
@@ -46,8 +44,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "BibliotecaXPTO",
-        ValidAudience = "BibliotecaXPTO",
+
+        ValidIssuers = new[] { "BibliotecaPazu", "BibliotecaXPTO" },
+        ValidAudiences = new[] { "BibliotecaPazu", "BibliotecaXPTO" },
+
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
