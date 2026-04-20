@@ -105,7 +105,7 @@ app.UseHttpsRedirection();
 
 
 
-app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, [FromServices] IObraService service) =>
+app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, IObraService service) =>
 {
     var obras = service.PesquisarObrasDisponiveis(nucleo, assunto);
     return Results.Ok(obras);
@@ -113,7 +113,7 @@ app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, [FromServices
 
 
 
-app.MapGet("/emprestimos/situacao/{leitorId:int}", (int leitorId, [FromServices] IEmprestimosService service) =>
+app.MapGet("/emprestimos/situacao/{leitorId:int}", (int leitorId, IEmprestimosService service) =>
 {
     try
     {
@@ -127,7 +127,7 @@ app.MapGet("/emprestimos/situacao/{leitorId:int}", (int leitorId, [FromServices]
 })
 .RequireAuthorization();
 
-app.MapPost("/emprestimos/requisicao", (EmprestimoDTO dto, [FromServices] IEmprestimosService service) =>
+app.MapPost("/emprestimos/requisicao", (EmprestimoDTO dto, IEmprestimosService service) =>
 {
     try
     {
@@ -141,7 +141,7 @@ app.MapPost("/emprestimos/requisicao", (EmprestimoDTO dto, [FromServices] IEmpre
 })
 .RequireAuthorization();
 
-app.MapPost("/emprestimos/devolucao", (DevolucaoDTO dto, [FromServices] IEmprestimosService service) =>
+app.MapPost("/emprestimos/devolucao", (DevolucaoDTO dto, IEmprestimosService service) =>
 {
     try
     {
@@ -155,7 +155,7 @@ app.MapPost("/emprestimos/devolucao", (DevolucaoDTO dto, [FromServices] IEmprest
 })
 .RequireAuthorization();
 
-app.MapPost("/leitores/{leitorId:int}/inscricao/cancelar", (int leitorId, [FromServices] ILeitoresService service) =>
+app.MapPost("/leitores/{leitorId:int}/inscricao/cancelar", (int leitorId,  ILeitoresService service) =>
 {
     try
     {
