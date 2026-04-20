@@ -12,6 +12,8 @@ using Serilog;
 using BibliotecaXPTOLibs.Helpers.Interfaces;
 using BibliotecaXPTOLibs.Repositories;
 using BibliotecaXPTOLibs.Helpers;
+using Microsoft.AspNetCore.Mvc;
+using BibliotecaXPTOLibs.DTOs;
 
 
 
@@ -82,6 +84,8 @@ builder.Services.AddScoped<IConnectionHelper, ConnectionHelper>();
 
 builder.Services.AddScoped<IObrasRepository, ObrasRepository>();
 builder.Services.AddScoped<IObraService, ObraService>();
+builder.Services.AddScoped<IEmprestimosRepository, EmprestimosRepository>();
+builder.Services.AddScoped<IEmprestimosService, EmprestimosService>();
 
 
 
@@ -95,6 +99,8 @@ app.UseSwaggerUI();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
+
+
 
 
 app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, IObraService service) =>
@@ -112,5 +118,47 @@ app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, IObraService 
 .WithName("PesquisarObrasDisponiveis");
 
 
+
+app.MapGet("/emprestimos/situacao/{leitorId:int}", (int leitorId, [FromServices] IEmprestimosService service) =>
+{
+    try
+    {
+        var situacao = service.ObterSituacaoLeitor(leitorId);
+        return Results.Ok(situacao);
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { mensagem = ex.Message });
+    }
+})
+.RequireAuthorization();
+
+app.MapPost("/emprestimos/requisicao", (EmprestimoDTO dto, [FromServices] IEmprestimosService service) =>
+{
+    try
+    {
+        service.RealizarRequisicao(dto);
+        return Results.Ok(new { mensagem = "Requisição realizada com sucesso." });
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { mensagem = ex.Message });
+    }
+})
+.RequireAuthorization();
+
+app.MapPost("/emprestimos/devolucao", (DevolucaoDTO dto, [FromServices] IEmprestimosService service) =>
+{
+    try
+    {
+        service.RealizarDevolucao(dto);
+        return Results.Ok(new { mensagem = "Devolução registada com sucesso." });
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { mensagem = ex.Message });
+    }
+})
+.RequireAuthorization();
 
 app.Run();

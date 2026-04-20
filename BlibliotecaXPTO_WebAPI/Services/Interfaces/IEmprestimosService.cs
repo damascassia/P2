@@ -1,9 +1,16 @@
 ﻿using BibliotecaXPTOLibs.DTOs;
+using BibliotecaXPTOLibs.Repositories.Interfaces;
+
 
 namespace BlibliotecaXPTO_WebAPI.Services.Interfaces
 {
     public interface IEmprestimosService
     {
-        (bool Sucesso, string Mensagem, List<EmprestimoAtivoDTO> Dados) ObterEmprestimosAtivos(int leitorId);
+        void RealizarRequisicao(EmprestimoDTO dto);
+        void RealizarDevolucao(DevolucaoDTO dto);
+        List<SituacaoEmprestimoDTO> ObterSituacaoLeitor(int leitorId);
+
+
     }
+
 }

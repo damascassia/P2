@@ -9,6 +9,8 @@ namespace BibliotecaXPTOLibs.Repositories.Interfaces
 {
     public interface IEmprestimosRepository
     {
-        
+        void RealizarRequisicao(string leitorDoc, int exemplarId);
+        void RealizarDevolucao(int exemplarId);
+        List<SituacaoEmprestimoDTO> ObterSituacaoLeitor(int leitorId);
     }
 }
