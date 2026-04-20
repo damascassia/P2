@@ -10,10 +10,14 @@ namespace BlibliotecaXPTO_WebAPI.Services
         private readonly IObrasRepository _repoObras;
 
         private readonly string _activeTag;
-        public ObraService(IObrasRepository obrasRepository, IConfiguration config)
+
+        private readonly ILogger _logger;   
+
+        public ObraService(IObrasRepository obrasRepository, IConfiguration config, ILogger logger)
         {
             _repoObras = obrasRepository;
             _activeTag = config.GetValue<string>("Settings:ActiveTag");
+            _logger = logger;
         }
 
         public List<HistObrasDTO> GetHistorico(RequestHistObrasDTO dto)
@@ -42,27 +46,10 @@ namespace BlibliotecaXPTO_WebAPI.Services
 
         }
 
-    
-        public (bool Sucesso, string Mensagem, List<ObraDisponivelDTO> Dados) PesquisarObrasDisponiveis(
-            string nomeNucleo, string assunto)
+        public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo, string assunto)
         {
-            try
-            {
-                var dados = _repoObras.PesquisarObrasDisponiveis(nomeNucleo, assunto);
-
-                if (dados.Count == 0)
-                    return (true, "Nenhuma obra disponível para os filtros indicados.", dados);
-
-                return (true, "OK", dados);
-            }
-            catch (SqlException ex)
-            {
-                return (false, ex.Message, null);
-            }
-            catch (Exception ex)
-            {
-                return (false, $"Erro inesperado: {ex.Message}", null);
-            }
+            _logger.LogInformation($"Pesquisa obras: nucleo={nomeNucleo} assunto={assunto}");
+            return _repoObras.PesquisarObrasDisponiveis(nomeNucleo, assunto);
         }
     }
 }

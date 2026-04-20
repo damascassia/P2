@@ -7,6 +7,7 @@ using BibliotecaXPTOLibs.Repositories.Interfaces;
 using BlibliotecaXPTO_WebAPI.Services;
 using BlibliotecaXPTO_WebAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -99,11 +100,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
 
-
-app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, IObraService service) =>
-{
-    var (sucesso, mensagem, dados) = service.PesquisarObrasDisponiveis(nucleo, assunto);
-
 app.MapGet("/", () => "Biblioteca API");
 
 
@@ -122,6 +118,13 @@ app.MapDelete("/Obras/{id}", (int id, IObraService service) =>
 app.MapPut("/Obras/{id}", (int id, CreateObraDTO dto, IObraService service) =>
 {
     return service.Update(id, dto);
+})
+.RequireAuthorization();
+
+app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, IObraService service) =>
+{
+    var obras = service.PesquisarObrasDisponiveis(nucleo, assunto);
+    return Results.Ok(obras);
 })
 .RequireAuthorization();
 
@@ -145,13 +148,7 @@ app.MapPost("/Obras/Historico", (RequestHistObrasDTO dto, IObraService service) 
 
 app.UseHttpsRedirection();
 
-    if (dados.Count == 0)
-        return Results.Ok(new { mensagem, dados });
-
-    return Results.Ok(dados);
-})
-.WithName("PesquisarObrasDisponiveis");
-
+    
 
 
 app.Run();
