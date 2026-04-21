@@ -28,9 +28,9 @@ namespace BibliotecaXPTOLibs.Repositories
             string sql = "SELECT * FROM Obras WHERE Id = @Id"; 
 
             var param = new Dictionary<string, object>
-        {
-            {"Id", id}
-        };
+            {
+                {"Id", id}
+            };
 
             string connection = _connectionHelper.getConnectionString(tagRepo);
 
@@ -52,6 +52,43 @@ namespace BibliotecaXPTOLibs.Repositories
                 throw new Exception($"Erro inesperado: {ex}");
             }
         }
+
+        public List<HistObrasDTO> GetHistorico(RequestHistObrasDTO dto, string tagRepo)
+        {
+            string sql = "EXEC sp_HistObrasRequisitadas @DocumentoLeitor, @TipoDocumento, @AgruparNucleo, @AgruparDatas, @InicioIntervalo, @FimIntervalo";
+
+            var param = new Dictionary<string, object>
+            {
+                {"@DocumentoLeitor", dto.DocumentoLeitor},
+                {"@TipoDocumento", dto.TipoDocumento},
+                {"@AgruparNucleo", dto.AgruparNucleo},
+                {"@AgruparDatas", dto.AgruparDatas},
+                {"@InicioIntervalo", dto.InicioIntervalo},
+                {"@FimIntervalo", dto.FimIntervalo}
+            };
+
+            string connection = _connectionHelper.getConnectionString(tagRepo);
+
+            try
+            {
+                if (string.IsNullOrEmpty(connection))
+                    throw new Exception($"Erro de Configuração: A tag '{tagRepo}' não possui uma ConnectionString válida.");
+
+                DalPro.ConnectionString = connection;
+
+                return DalPro.Query<HistObrasDTO>(sql, param);
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception($"Erro de banco de dados: {ex}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro inesperado: {ex}");
+            }
+        }
+
+        
 
         public int Insert(CreateObraDTO dto, string tagRepo)
         {
@@ -127,6 +164,36 @@ namespace BibliotecaXPTOLibs.Repositories
                 int rows = DalPro.Execute(sql, param);
 
                 return rows > 0;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception($"Erro de banco de dados: {ex}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro inesperado: {ex}");
+            }
+        }
+
+        public int UpdateCount(int id, string tagRepo)
+        {
+            string sql = "SELECT COUNT(Id) FROM Exemplares WHERE Id_Obra = @Id_Obra";
+
+            var param = new Dictionary<string, object>
+            {
+                {"Id_Obra", id}
+            };
+
+            string connection = _connectionHelper.getConnectionString(tagRepo);
+
+            try
+            {
+                if (string.IsNullOrEmpty(connection))
+                    throw new Exception($"Erro de Configuração: A tag '{tagRepo}' não possui uma ConnectionString válida.");
+
+                DalPro.ConnectionString = connection;
+
+                return Convert.ToInt32(DalPro.ExecuteScalar(sql, param));
             }
             catch (SqlException ex)
             {

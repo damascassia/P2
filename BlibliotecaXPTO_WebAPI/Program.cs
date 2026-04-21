@@ -137,6 +137,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMetricsRepository, MetricsRepository>();
 builder.Services.AddScoped<IMetricsService, MetricsService>();
 builder.Services.AddScoped<IAssuntoRepository, AssuntoRepository>();
+builder.Services.AddScoped<IExemplarService, ExemplarService>();    
+builder.Services.AddScoped<IExemplaresRepository,ExemplaresRepository>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -159,22 +161,38 @@ app.MapGet("/", () => "Biblioteca API");
 app.MapPost("/Obras", (CreateObraDTO dto, IObraService service) =>
 {
     return service.Create(dto);
-});
-//.RequireAuthorization();
+})
+.RequireAuthorization();
 
 app.MapDelete("/Obras/{id}", (int id, IObraService service) =>
 {
     return service.Delete(id);
-});
-//.RequireAuthorization();
+})
+.RequireAuthorization();
 
 app.MapPut("/Obras/{id}", (int id, CreateObraDTO dto, IObraService service) =>
 {
     return service.Update(id, dto);
-});
-//.RequireAuthorization();
+})
+.RequireAuthorization();
 
+app.MapPut("/Exemplares/ChangeNucleo", (ChangeNucleoDTO dto, IExemplarService service) =>
+{
+    return service.ChangeNucleo(dto);
+})
+.RequireAuthorization();
 
+app.MapGet("/Obras/UpdateCount", (int id, IObraService service) =>
+{
+    return service.UpdateCount(id);
+})
+.RequireAuthorization();
+
+app.MapPost("/Obras/Historico", (RequestHistObrasDTO dto, IObraService service) =>
+{
+    return service.GetHistorico(dto);
+})
+.RequireAuthorization();
 
 app.UseHttpsRedirection();
 
