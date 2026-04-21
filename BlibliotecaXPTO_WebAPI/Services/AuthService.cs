@@ -46,8 +46,8 @@ namespace BlibliotecaXPTO_WebAPI.Services
                 };
 
                 var token = new JwtSecurityToken(
-                    issuer: "BibliotecaXPTO",
-                    audience: "BibliotecaXPTO",
+                    issuer: "issuer",
+                    audience: "issuer",
                     claims: claims,
                     expires: DateTime.Now.AddHours(2),
                     signingCredentials: creds);
