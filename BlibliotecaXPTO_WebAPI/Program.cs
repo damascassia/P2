@@ -1,11 +1,13 @@
 ﻿using System.Text;
+using BibliotecaXPTOLibs.DTOs;
 using BibliotecaXPTOLibs.Helpers;
 using BibliotecaXPTOLibs.Helpers.Interfaces;
 using BibliotecaXPTOLibs.Repositories;
 using BibliotecaXPTOLibs.Repositories.Interfaces;
-using BlibliotecaXPTO_WebAPI.Services.Interfaces;
 using BlibliotecaXPTO_WebAPI.Services;
+using BlibliotecaXPTO_WebAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -14,6 +16,7 @@ using BibliotecaXPTOLibs.Repositories;
 using BibliotecaXPTOLibs.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using BibliotecaXPTOLibs.DTOs;
+
 
 
 
@@ -47,8 +50,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "BibliotecaXPTO",
-        ValidAudience = "BibliotecaXPTO",
+
+        ValidIssuers = new[] { "BibliotecaPazu", "BibliotecaXPTO" },
+        ValidAudiences = new[] { "BibliotecaPazu", "BibliotecaXPTO" },
+
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
@@ -84,6 +89,10 @@ builder.Services.AddScoped<IConnectionHelper, ConnectionHelper>();
 
 builder.Services.AddScoped<IObrasRepository, ObrasRepository>();
 builder.Services.AddScoped<IObraService, ObraService>();
+builder.Services.AddScoped<IConnectionHelper, ConnectionHelper>();
+builder.Services.AddScoped<IAssuntoRepository, AssuntoRepository>();
+builder.Services.AddScoped<IExemplarService, ExemplarService>();    
+builder.Services.AddScoped<IExemplaresRepository,ExemplaresRepository>();
 builder.Services.AddScoped<IEmprestimosRepository, EmprestimosRepository>();
 builder.Services.AddScoped<IEmprestimosService, EmprestimosService>();
 builder.Services.AddScoped<ILeitoresRepository, LeitoresRepository>();
@@ -102,6 +111,26 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
 
+app.MapGet("/", () => "Biblioteca API");
+
+
+app.MapPost("/Obras", (CreateObraDTO dto, IObraService service) =>
+{
+    return service.Create(dto);
+})
+.RequireAuthorization();
+
+app.MapDelete("/Obras/{id}", (int id, IObraService service) =>
+{
+    return service.Delete(id);
+})
+.RequireAuthorization();
+
+app.MapPut("/Obras/{id}", (int id, CreateObraDTO dto, IObraService service) =>
+{
+    return service.Update(id, dto);
+})
+.RequireAuthorization();
 
 
 
@@ -109,10 +138,30 @@ app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, IObraService 
 {
     var obras = service.PesquisarObrasDisponiveis(nucleo, assunto);
     return Results.Ok(obras);
-}).RequireAuthorization();
+})
+.RequireAuthorization();
 
+app.MapPut("/Exemplares/ChangeNucleo", (ChangeNucleoDTO dto, IExemplarService service) =>
+{
+    return service.ChangeNucleo(dto);
+})
+.RequireAuthorization();
 
+app.MapGet("/Obras/UpdateCount", (int id, IObraService service) =>
+{
+    return service.UpdateCount(id);
+})
+.RequireAuthorization();
 
+app.MapPost("/Obras/Historico", (RequestHistObrasDTO dto, IObraService service) =>
+{
+    return service.GetHistorico(dto);
+})
+.RequireAuthorization();
+
+app.UseHttpsRedirection();
+
+    
 app.MapGet("/emprestimos/situacao/{leitorId:int}", (int leitorId, IEmprestimosService service) =>
 {
     try
