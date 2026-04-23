@@ -9,7 +9,7 @@ namespace BlibliotecaXPTO_WebAPI.Services
 
     public class EmprestimosService : IEmprestimosService
     {
-        private readonly IEmprestimosRepository _emprestimosRepository;
+      
 
         private readonly IEmprestimosRepository _repo;
         private readonly ILogger _logger;
@@ -36,7 +36,7 @@ namespace BlibliotecaXPTO_WebAPI.Services
         {
             try
             {
-                var dados = _emprestimosRepository.ObterSituacaoLeitor(leitorId);
+                var dados = _repo.ObterSituacaoLeitor(leitorId);
                 return dados;
             }
             catch (SqlException)
