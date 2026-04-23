@@ -109,7 +109,7 @@ app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, IObraService 
 {
     var obras = service.PesquisarObrasDisponiveis(nucleo, assunto);
     return Results.Ok(obras);
-});
+}).RequireAuthorization();
 
 
 
@@ -124,7 +124,7 @@ app.MapGet("/emprestimos/situacao/{leitorId:int}", (int leitorId, IEmprestimosSe
     {
         return Results.BadRequest(new { mensagem = ex.Message });
     }
-})
+}).RequireAuthorization()
 ;
 
 app.MapPost("/emprestimos/requisicao", (EmprestimoDTO dto, IEmprestimosService service) =>
@@ -138,7 +138,7 @@ app.MapPost("/emprestimos/requisicao", (EmprestimoDTO dto, IEmprestimosService s
     {
         return Results.BadRequest(new { mensagem = ex.Message });
     }
-})
+}).RequireAuthorization()
 ;
 
 app.MapPost("/emprestimos/devolucao", (DevolucaoDTO dto, IEmprestimosService service) =>
@@ -152,7 +152,7 @@ app.MapPost("/emprestimos/devolucao", (DevolucaoDTO dto, IEmprestimosService ser
     {
         return Results.BadRequest(new { mensagem = ex.Message });
     }
-})
+}).RequireAuthorization()
 ;
 
 app.MapPost("/leitores/{leitorId:int}/inscricao/cancelar", (int leitorId,  ILeitoresService service) =>
@@ -166,7 +166,7 @@ app.MapPost("/leitores/{leitorId:int}/inscricao/cancelar", (int leitorId,  ILeit
     {
         return Results.BadRequest(new { mensagem = ex.Message });
     }
-})
+}).RequireAuthorization()
 ;
 
 app.Run();
