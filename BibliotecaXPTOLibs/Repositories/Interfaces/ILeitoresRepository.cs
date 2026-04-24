@@ -8,6 +8,6 @@ namespace BibliotecaXPTOLibs.Repositories
 {
     public interface ILeitoresRepository
     {
-        void CancelarInscricao(int leitorId);
+        void CancelarInscricao(int leitorId, string tagRepo);
     }
 }

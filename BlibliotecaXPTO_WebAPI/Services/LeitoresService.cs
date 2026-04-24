@@ -6,14 +6,15 @@ namespace BlibliotecaXPTO_WebAPI.Services
 {
     public class LeitoresService : ILeitoresService
     {
-        
-        
+
+        private readonly string _activeTag;
             private readonly ILeitoresRepository _repo;
             private readonly ILogger _logger;
 
-            public LeitoresService(ILogger<LeitoresService> logger, ILeitoresRepository repo)
+            public LeitoresService(ILogger<LeitoresService> logger, ILeitoresRepository repo, IConfiguration config)
             {
-                _repo = repo;
+                _activeTag = config.GetValue<string>("Settings:ActiveTag");
+            _repo = repo;
                 _logger = logger;
             }
 
@@ -22,7 +23,7 @@ namespace BlibliotecaXPTO_WebAPI.Services
                 try
                 {
                     _logger.LogInformation($"Cancelar inscrição: leitorId={leitorId}");
-                    _repo.CancelarInscricao(leitorId);
+                    _repo.CancelarInscricao(leitorId, _activeTag);
                 }
                 catch { throw; }
             }

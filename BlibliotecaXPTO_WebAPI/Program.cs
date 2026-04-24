@@ -111,14 +111,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
 
-
+app.MapGet("/", () => "Biblioteca API");
 
 
 app.MapPost("/Obras", (CreateObraDTO dto, IObraService service) =>
 {
     return service.Create(dto);
-})
-.RequireAuthorization();
+});
+//.RequireAuthorization();
 
 app.MapDelete("/Obras/{id}", (int id, IObraService service) =>
 {
