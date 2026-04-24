@@ -18,7 +18,7 @@ namespace BibliotecaXPTOLibs.Repositories
         private readonly string _connectionString;
         public UtilizadoresRepository (IConnectionHelper connectionHelper, IConfiguration configuration )
         {
-            var tagGlobal = configuration["Settings:ActiveTag"] ?? "DB_BibliotecaXPTO";
+            var tagGlobal = configuration["Settings:ActiveTag"] ?? "DB_BibliotecaPazu";
             _connectionString = connectionHelper.getConnectionString ( tagGlobal ); 
         }
         public void InitConnection()

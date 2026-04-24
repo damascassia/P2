@@ -1,4 +1,5 @@
-﻿using BibliotecaXPTOLibs.DTOs;
+﻿
+using BibliotecaXPTOLibs.DTOs;
 using BibliotecaXPTOLibs.Helpers.Interfaces;
 using DalProLib;
 using BibliotecaXPTOLibs.Repositories;
@@ -17,7 +18,7 @@ namespace BibliotecaXPTOLibs.Helpers
 
         public LoginHelper(IConfiguration config)
         {
-            _connectionString = config.GetConnectionString("DB_BibliotecaXPTO");
+            _connectionString = config.GetConnectionString("BibliotecaPazu");
         }
         public void InitConnection()
         {
