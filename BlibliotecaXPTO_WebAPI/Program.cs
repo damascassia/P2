@@ -1,7 +1,7 @@
 using BibliotecaXPTOLibs.DTOs;
-using BibliotecaXPTOLibs.Models;
 using BibliotecaXPTOLibs.Helpers;
 using BibliotecaXPTOLibs.Helpers.Interfaces;
+using BibliotecaXPTOLibs.Models;
 using BibliotecaXPTOLibs.Repositories;
 using BibliotecaXPTOLibs.Repositories.Interfaces;
 using BlibliotecaXPTO_WebAPI.Services;
@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Security.Claims;
 using System.Text;
+
 
 //Logger
 
@@ -20,6 +22,7 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File("Logs/log.txt",
         rollingInterval: RollingInterval.Day)
     .CreateLogger();
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,10 +47,20 @@ builder.Services.AddCors(options =>
 //JWT Bearer
 
 var secret_key = builder.Configuration["App:JWT:SECRET_KEY"];
+var issuer = builder.Configuration["App:JWT:ISSUER"];
+
 var key = Encoding.UTF8.GetBytes(secret_key);
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
 .AddJwtBearer(options =>
 {
+    options.MapInboundClaims = false;
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -55,10 +68,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
 
-        ValidIssuers = new[] { "BibliotecaPazu", "BibliotecaXPTO" },
-        ValidAudiences = new[] { "BibliotecaPazu", "BibliotecaXPTO" },
+        ValidIssuer = issuer,
+        ValidAudience = issuer,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
 
-        IssuerSigningKey = new SymmetricSecurityKey(key)
+        NameClaimType = "name",
+        RoleClaimType = "role"
     };
 });
 
@@ -100,8 +115,8 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
         Description = "JSON Web Token baseado no esquema Bearer. Exemplo: \"Bearer {token}\""
@@ -144,6 +159,7 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
 app.UseCors("cors");
 
 app.UseSwagger();
@@ -193,8 +209,6 @@ app.MapPost("/Obras/Historico", (RequestHistObrasDTO dto, IObraService service) 
     return service.GetHistorico(dto);
 })
 .RequireAuthorization();
-
-app.UseHttpsRedirection();
 
 app.MapPost("/login", (LoginDTO login, IAuthService auth) =>
 {
@@ -261,7 +275,6 @@ app.MapGet("/TopLeitores", (DateTime dataInicio, DateTime dataFim, IMetricsServi
     return Results.Ok(service.GetTopLeitores(dataInicio, dataFim));
 })
     .RequireAuthorization("TodosAutenticados");
-
 
 app.Run();
 

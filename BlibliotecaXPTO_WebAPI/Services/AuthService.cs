@@ -25,10 +25,12 @@ namespace BlibliotecaXPTO_WebAPI.Services
             {
                 return null;
             }
-            string chave = _config["App:JWT:SECRET_KEY"];
-            return GenerateToken(utilizadorValido.UserName, utilizadorValido.Id_TipoUser.ToString(), chave);
+            var chave = _config["App:JWT:SECRET_KEY"];
+            var issuer = _config["App:JWT:ISSUER"] ?? "BibliotecaPazu";
+
+            return GenerateToken(utilizadorValido.UserName, utilizadorValido.Id_TipoUser.ToString(), chave, issuer);
         }
-        public string GenerateToken(string username, string userRole, string JWTKey)
+        public string GenerateToken(string username, string userRole, string JWTKey, string issuer)
         {
             try
             {
@@ -36,18 +38,22 @@ namespace BlibliotecaXPTO_WebAPI.Services
 
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+                if (!int.TryParse(userRole, out int roleInt))
+                    throw new Exception("Role inválida vinda do banco");
+
+                var role = ((EnumRoles)roleInt).ToString();
+
                 var claims = new[]
                 {
-                    new Claim(ClaimTypes.Name, username),
-                    new Claim(ClaimTypes.Role, ((EnumRoles)int.Parse(userRole)).ToString()),
-                    new Claim("Plataforma", "BibliotecaXPTO"),
-                    new Claim("Plataforma2", "BibliotecaPazu"),
+                    new Claim("name", username),
+                    new Claim("role", role),
+                   // new Claim("Plataforma", "BibliotecaXPTO"),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
 
                 var token = new JwtSecurityToken(
-                    issuer: "issuer",
-                    audience: "issuer",
+                    issuer: issuer,
+                    audience: issuer,
                     claims: claims,
                     expires: DateTime.Now.AddHours(2),
                     signingCredentials: creds);

@@ -12,6 +12,7 @@ namespace BlibliotecaXPTO_WebAPI.Services
 
         public MetricsService(ILogger<UtilizadoresService> logger, IMetricsRepository repo)
         {
+
             _repo = repo;
             _logger = logger;
         }

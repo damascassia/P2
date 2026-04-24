@@ -27,7 +27,7 @@ namespace BlibliotecaXPTO_WebAPI.Services
 
             var roleString = httpContext?
                 .User?
-                .FindFirst(ClaimTypes.Role)?
+                .FindFirst("role")?
                 .Value;
 
             if (string.IsNullOrEmpty(roleString))
@@ -37,12 +37,13 @@ namespace BlibliotecaXPTO_WebAPI.Services
         }
         public void AlterarStatus(int Id, AlterarStatusDTO dto)
         {
+            _repo.InitConnection();
+            
             var role = GetUserRole();
 
             if (role == EnumRoles.Leitor)
                 throw new UnauthorizedAccessException();
 
-            _repo.InitConnection();
             var trans = DalPro.BeginTransaction();
             try
             {
@@ -58,6 +59,7 @@ namespace BlibliotecaXPTO_WebAPI.Services
 
         public void DeleteLeitorAntigo()
         {
+            _repo.InitConnection();
             var role = GetUserRole();
 
             if (role == EnumRoles.Leitor)
