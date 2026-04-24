@@ -13,12 +13,12 @@ namespace BibliotecaXPTOLibs.Helpers
         {
             if (tagRepo == "DB_BibliotecaPazu")
             {
-                _connectionstring = "Server=DESKTOP-S9T5R8J;Database=BibliotecaPazu;Trusted_Connection=True;TrustServerCertificate=True";
+                _connectionstring = "Server=.\\SQLSERVER;Database=BibliotecaPazu;Trusted_Connection=True;TrustServerCertificate=True";
             }
 
             if (tagRepo == "DB_BibliotecaXPTO")
             {
-                _connectionstring = "Server=DESKTOP-S9T5R8J;Database=BibliotecaXPTO;Trusted_Connection=True;TrustServerCertificate=True";
+                _connectionstring = "Server=.\\SQLSERVER;Database=BibliotecaXPTO;Trusted_Connection=True;TrustServerCertificate=True";
             }
 
             return _connectionstring;

@@ -244,7 +244,8 @@ namespace BibliotecaXPTOLibs.Repositories
             }
         }
 
-        public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string tagRepo, string nomeNucleo = null, string assunto = null )
+
+        public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string tagRepo, string nomeNucleo = null, string assunto = null)
         {
             string connection = _connectionHelper.getConnectionString(tagRepo);
             try
@@ -255,10 +256,10 @@ namespace BibliotecaXPTOLibs.Repositories
                 DalPro.ConnectionString = connection;
 
                 var dt = DalPro.ExecuteSP("sp_ObrasDisponiveis", new Dictionary<string, object>
-    {
-        { "@NomeNucleo", nomeNucleo },
-        { "@Assunto",    assunto    }
-    });
+                {
+                    { "@NomeNucleo", nomeNucleo },
+                    { "@Assunto",    assunto    }
+                });
 
                 var lista = new List<ObraDisponivelDTO>();
                 foreach (System.Data.DataRow row in dt.Rows)
@@ -275,7 +276,7 @@ namespace BibliotecaXPTOLibs.Repositories
             catch (SqlException ex)
             {
                 throw new Exception($"Erro de base de dados: {ex.Message}");
-                
+
             }
             catch (Exception ex)
             {

@@ -159,6 +159,7 @@ app.MapPost("/Obras/Historico", (RequestHistObrasDTO dto, IObraService service) 
 })
 .RequireAuthorization();
 
+
 app.UseHttpsRedirection();
 
     
