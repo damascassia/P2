@@ -11,9 +11,11 @@ namespace BlibliotecaXPTO_WebAPI.Services
 
         private readonly string _activeTag;
 
-        private readonly ILogger _logger;   
+        //private readonly ILogger _logger;   
+        private readonly ILogger<ObraService> _logger;
 
-        public ObraService(IObrasRepository obrasRepository, IConfiguration config, ILogger logger)
+        //public ObraService(IObrasRepository obrasRepository, IConfiguration config, ILogger logger)
+        public ObraService(IObrasRepository obrasRepository, IConfiguration config, ILogger<ObraService> logger)
         {
             _repoObras = obrasRepository;
             _activeTag = config.GetValue<string>("Settings:ActiveTag");
@@ -25,7 +27,18 @@ namespace BlibliotecaXPTO_WebAPI.Services
             return _repoObras.GetHistorico(dto, _activeTag);
         }
 
-        public int Create(CreateObraDTO dto)
+        public int Create(CreateObraDTO dto);
+
+        /*public int Create(CreateObraDTO dto)
+        {
+            return _repoObras.Insert(dto, _activeTag);
+        }*/
+
+        /*public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo, string assunto)
+        {
+            return _repoObras.PesquisarObrasDisponiveis(nomeNucleo, assunto);
+        }*/
+
         public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo, string assunto)
         {
             return _repoObras.Insert(dto, _activeTag);
@@ -47,12 +60,6 @@ namespace BlibliotecaXPTO_WebAPI.Services
 
         }
 
-        public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo, string assunto)
-        {
-            _logger.LogInformation($"Pesquisa obras: nucleo={nomeNucleo} assunto={assunto}");
-            return _repoObras.PesquisarObrasDisponiveis(nomeNucleo, assunto);
-            _logger.LogInformation($"Pesquisa obras: nucleo={nomeNucleo} assunto={assunto}");
-            return _repo.PesquisarObrasDisponiveis(nomeNucleo, assunto);
-        }
+   
     }
     }

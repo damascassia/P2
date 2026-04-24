@@ -111,7 +111,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
 
-app.MapGet("/", () => "Biblioteca API");
+
 
 
 app.MapPost("/Obras", (CreateObraDTO dto, IObraService service) =>

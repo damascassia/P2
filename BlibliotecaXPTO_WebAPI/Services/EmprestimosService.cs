@@ -41,12 +41,12 @@ namespace BlibliotecaXPTO_WebAPI.Services
             }
             catch (SqlException)
             {
-                // Handle exception as needed, e.g., log and return empty list
+           
                 return new List<SituacaoEmprestimoDTO>();
             }
             catch (Exception)
             {
-                // Handle exception as needed, e.g., log and return empty list
+              
                 return new List<SituacaoEmprestimoDTO>();
             }
         }
