@@ -243,13 +243,13 @@ namespace BibliotecaXPTOLibs.Repositories
                 throw new Exception($"Erro inesperado: {ex}");
             }
         }
-           
-        
+
+
         public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo = null, string assunto = null)
         {
             var dt = DalPro.ExecuteSP("sp_ObrasDisponiveis", new Dictionary<string, object>
             {
-                { "@NomeNucleo", nomeNucleo },  
+                { "@NomeNucleo", nomeNucleo },
                 { "@Assunto",    assunto    }
             });
 
