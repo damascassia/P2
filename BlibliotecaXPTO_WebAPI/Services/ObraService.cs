@@ -11,9 +11,9 @@ namespace BlibliotecaXPTO_WebAPI.Services
 
         private readonly string _activeTag;
 
-        private readonly ILogger _logger;   
+        private readonly ILogger<ObraService> _logger;   
 
-        public ObraService(IObrasRepository obrasRepository, IConfiguration config, ILogger logger)
+        public ObraService(IObrasRepository obrasRepository, IConfiguration config, ILogger<ObraService> logger)
         {
             _repoObras = obrasRepository;
             _activeTag = config.GetValue<string>("Settings:ActiveTag");
@@ -49,7 +49,7 @@ namespace BlibliotecaXPTO_WebAPI.Services
         public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo, string assunto)
         {
             _logger.LogInformation($"Pesquisa obras: nucleo={nomeNucleo} assunto={assunto}");
-            return _repoObras.PesquisarObrasDisponiveis(nomeNucleo, assunto);
+            return _repoObras.PesquisarObrasDisponiveis(_activeTag, nomeNucleo, assunto);
         }
     }
 }

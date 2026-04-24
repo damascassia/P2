@@ -18,6 +18,7 @@ namespace BibliotecaXPTOLibs.Repositories.Interfaces
         int UpdateCount(int id, string tagRepo);
 
         bool Delete(int id, string tagRepo);
-        List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo = null, string assunto = null);
+
+        List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string tagRepo, string nomeNucleo = null, string assunto = null);
     }
 }

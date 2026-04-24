@@ -245,25 +245,43 @@ namespace BibliotecaXPTOLibs.Repositories
         }
 
 
-        public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo = null, string assunto = null)
+        public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string tagRepo, string nomeNucleo = null, string assunto = null)
         {
-            var dt = DalPro.ExecuteSP("sp_ObrasDisponiveis", new Dictionary<string, object>
+            string connection = _connectionHelper.getConnectionString(tagRepo);
+            try
             {
-                { "@NomeNucleo", nomeNucleo },
-                { "@Assunto",    assunto    }
-            });
+                if (string.IsNullOrEmpty(connection))
+                    throw new Exception($"Erro de Configuração: A tag '{tagRepo}' não possui uma ConnectionString válida.");
 
-            var lista = new List<ObraDisponivelDTO>();
-            foreach (System.Data.DataRow row in dt.Rows)
-            {
-                lista.Add(new ObraDisponivelDTO
+                DalPro.ConnectionString = connection;
+
+                var dt = DalPro.ExecuteSP("sp_ObrasDisponiveis", new Dictionary<string, object>
                 {
-                    Titulo = row["Titulo"].ToString(),
-                    Autor = row["Autor"].ToString()
+                    { "@NomeNucleo", nomeNucleo },
+                    { "@Assunto",    assunto    }
                 });
-            }
 
-            return lista;
+                var lista = new List<ObraDisponivelDTO>();
+                foreach (System.Data.DataRow row in dt.Rows)
+                {
+                    lista.Add(new ObraDisponivelDTO
+                    {
+                        Titulo = row["Titulo"].ToString(),
+                        Autor = row["Autor"].ToString()
+                    });
+                }
+
+                return lista;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception($"Erro de base de dados: {ex.Message}");
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro inesperado:{ex.Message}");
+            }
         }
     }
 }
