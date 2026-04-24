@@ -27,12 +27,12 @@ namespace BlibliotecaXPTO_WebAPI.Services
             return _repoObras.GetHistorico(dto, _activeTag);
         }
 
-        //public int Create(CreateObraDTO dto);dddss
+        //public int Create(CreateObraDTO dto);
 
-        /*public int Create(CreateObraDTO dto)
+        public int Create(CreateObraDTO dto)
         {
             return _repoObras.Insert(dto, _activeTag);
-        }*/
+        }
 
         /*public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo, string assunto)
         {
