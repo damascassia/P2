@@ -7,14 +7,24 @@ namespace DalProLib
     public class DalPro
     {
         public static string ConnectionString; 
-
-        private static readonly Dictionary<Type, PropertyInfo[]> _cacheProps =
-            new Dictionary<Type, PropertyInfo[]>();
-        
-
-        public static SqlConnection GetConnection() 
+                private static readonly Dictionary<Type, PropertyInfo[]> _cacheProps =
+            new Dictionary<Type, PropertyInfo[]>();        
+       public static SqlConnection GetConnection() 
         {
             return new SqlConnection(ConnectionString); 
+        } 
+        public static bool TryConnect()
+        {
+            try
+            {
+                using var cn = GetConnection();
+                cn.Open();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         // --------------------------------------------------
@@ -30,9 +40,7 @@ namespace DalProLib
             Dictionary<string, object> parameters = null) 
         {
             SqlCommand cmd;
-
             if (trans != null) 
-
                 cmd = new SqlCommand(sql, trans.Connection, trans);
             else
             {  
@@ -40,13 +48,11 @@ namespace DalProLib
                 cn.Open(); 
                 cmd = new SqlCommand(sql, cn);
             }
-
             if (parameters != null)  
             {
                 foreach (var p in parameters)
                     cmd.Parameters.AddWithValue(p.Key, p.Value ?? DBNull.Value);
             }
-
             return cmd;
         }
 
@@ -62,12 +68,9 @@ namespace DalProLib
             SqlTransaction trans = null)
         {
             using SqlCommand cmd = CreateCommand(sql, trans, parameters); 
-
             int result = cmd.ExecuteNonQuery(); 
-
             if (trans == null)
                 cmd.Connection.Close(); 
-
             return result;
         }
 
@@ -82,12 +85,9 @@ namespace DalProLib
             SqlTransaction trans = null)
         {
             using SqlCommand cmd = CreateCommand(sql, trans, parameters);
-
             object result = cmd.ExecuteScalar(); 
-
             if (trans == null)
                 cmd.Connection.Close();
-
             return result;
         }
 
@@ -101,23 +101,17 @@ namespace DalProLib
             SqlTransaction trans = null) where T : new() 
         {
             List<T> list = new(); 
-
             using SqlCommand cmd = CreateCommand(sql, trans, parameters); 
             using SqlDataReader dr = cmd.ExecuteReader(); 
-
             PropertyInfo[] props; 
-
             if (!_cacheProps.TryGetValue(typeof(T), out props)) 
             {
                 props = typeof(T).GetProperties();
                 _cacheProps[typeof(T)] = props; 
-            }
-
-           
+            }           
             while (dr.Read())
             {
                 T obj = new T();
-
                 foreach (var prop in props)
                 {
                     try 
@@ -129,13 +123,10 @@ namespace DalProLib
                     }
                     catch { }
                 }
-
                 list.Add(obj);
             }
-
             if (trans == null)
                 cmd.Connection.Close(); 
-
             return list;
         }
 
@@ -157,25 +148,17 @@ namespace DalProLib
                 cn = GetConnection();
                 cn.Open();
             }
-
             da = new SqlDataAdapter(sql, cn); 
-
             if (trans != null)
                 da.SelectCommand.Transaction = trans; 
-
             da.MissingSchemaAction = MissingSchemaAction.AddWithKey; 
-
             SqlCommandBuilder cb = new SqlCommandBuilder(da);
-
             cb.QuotePrefix = "[";
             cb.QuoteSuffix = "]";
-
             DataTable dt = new DataTable();
             da.Fill(dt);
-
             if (trans == null)
                 cn.Close();
-
             return dt;
         }
 
@@ -192,7 +175,6 @@ namespace DalProLib
             SqlTransaction trans = null)
         {
             SqlConnection cn;
-
             if (trans != null)
                 cn = trans.Connection;
             else
@@ -200,27 +182,20 @@ namespace DalProLib
                 cn = GetConnection();
                 cn.Open();
             }
-
             SqlCommand cmd = new SqlCommand(spName, cn);
             cmd.CommandType = CommandType.StoredProcedure;
-
             if (trans != null)
                 cmd.Transaction = trans;
-
             if (parameters != null) 
             {
                 foreach (var p in parameters)
                     cmd.Parameters.AddWithValue(p.Key, p.Value ?? DBNull.Value);
             }
-
             SqlDataAdapter da = new SqlDataAdapter(cmd);
-
             DataTable dt = new DataTable();
             da.Fill(dt); 
-
             if (trans == null)
                 cn.Close(); 
-
             return dt; 
         }
 
@@ -231,7 +206,6 @@ namespace DalProLib
            SqlTransaction trans = null)
         {
             SqlConnection cn;
-
             if (trans != null)
                 cn = trans.Connection; 
             else
@@ -239,23 +213,18 @@ namespace DalProLib
                 cn = GetConnection(); 
                 cn.Open();
             }
-
             SqlCommand cmd = new SqlCommand(spName, cn);
             cmd.CommandType = CommandType.StoredProcedure; 
             if (trans != null)
-                cmd.Transaction = trans; 
-
+                cmd.Transaction = trans;
             if (parameters != null) 
             {
                 foreach (var p in parameters)
                     cmd.Parameters.AddWithValue(p.Key, p.Value ?? DBNull.Value);
             }
-
             object result = cmd.ExecuteScalar();
-
             if (trans == null)
                 cn.Close(); 
-
             return result;
         }
 
@@ -270,23 +239,17 @@ namespace DalProLib
             cn.Open();
             return cn.BeginTransaction(); 
         }
-
         public static void Commit(SqlTransaction trans)
         {
             SqlConnection cn = trans.Connection;
-
             trans.Commit();
-
             if (cn.State == ConnectionState.Open) 
                 cn.Close();
         }
-
         public static void Rollback(SqlTransaction trans) 
         {
             SqlConnection cn = trans.Connection;
-
             trans.Rollback();
-
             if (cn.State == ConnectionState.Open)
                 cn.Close();
         }

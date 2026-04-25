@@ -8,10 +8,8 @@ namespace BibliotecaXPTOLibs.DTOs
 {
     public class CreateObraDTO
     {
-        public string Autor { get; set; }
-
-        public string Titulo { get; set; }
-
-        public int Assunto_Id { get; set; }
+        public object Autor { get; internal set; }
+        public object Titulo { get; internal set; }
+        public object Assunto_Id { get; internal set; }
     }
 }

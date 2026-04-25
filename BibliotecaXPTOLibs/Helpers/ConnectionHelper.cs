@@ -11,9 +11,16 @@ namespace BibliotecaXPTOLibs.Helpers
 
         public string getConnectionString(string tagRepo)
         {
-            if (tagRepo == "DB_Biblioteca")
+            if (tagRepo == "DB_BibliotecaPazu")
             {
-                _connectionstring = "Server=localhost;Database=BibliotecaPazu;Trusted_Connection=True;TrustServerCertificate=True";
+                //connectionstring = "Server=.\\SQLSERVER;Database=BibliotecaPazu;Trusted_Connection=True;TrustServerCertificate=True";
+                _connectionstring = "Server=LAPTOP-BTNU7VGH\\MSSQLSERVER01;Database=BibliotecaPazu;Trusted_Connection=True;TrustServerCertificate=True";
+
+            }
+
+            if (tagRepo == "DB_BibliotecaXPTO")
+            {
+                _connectionstring = "Server=LAPTOP-BTNU7VGH\\mssqlserver01;Database=BibliotecaXPTO;Trusted_Connection=True;TrustServerCertificate=True";
             }
 
             return _connectionstring;

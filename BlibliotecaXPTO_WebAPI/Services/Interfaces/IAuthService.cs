@@ -2,5 +2,9 @@
 {
     public interface IAuthService
     {
+        public string Login(string username, string password);
+        public string GenerateToken(string username, string userRole, string JWTKey, string issuer);
+
+
     }
 }

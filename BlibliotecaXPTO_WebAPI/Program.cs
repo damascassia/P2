@@ -2,6 +2,7 @@
 using BibliotecaXPTOLibs.DTOs;
 using BibliotecaXPTOLibs.Helpers;
 using BibliotecaXPTOLibs.Helpers.Interfaces;
+using BibliotecaXPTOLibs.Models;
 using BibliotecaXPTOLibs.Repositories;
 using BibliotecaXPTOLibs.Repositories.Interfaces;
 using BlibliotecaXPTO_WebAPI.Services;
@@ -11,16 +12,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Security.Claims;
+using System.Text;
 
 
-
-
-
+//Logger
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,10 +37,20 @@ builder.Services.AddCors(options =>
 
 
 var secret_key = builder.Configuration["App:JWT:SECRET_KEY"];
+var issuer = builder.Configuration["App:JWT:ISSUER"];
+
 var key = Encoding.UTF8.GetBytes(secret_key);
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
 .AddJwtBearer(options =>
 {
+    options.MapInboundClaims = false;
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -46,12 +58,45 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
 
-        ValidIssuers = new[] { "BibliotecaPazu", "BibliotecaXPTO" },
-        ValidAudiences = new[] { "BibliotecaPazu", "BibliotecaXPTO" },
+        ValidIssuer = issuer,
+        ValidAudience = issuer,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
 
-        IssuerSigningKey = new SymmetricSecurityKey(key)
+        NameClaimType = "name",
+        RoleClaimType = "role"
     };
 });
+
+//Autorization
+
+builder.Services.AddAuthorization(options =>
+{
+options.AddPolicy("ApenasAdmin", policy =>
+    policy.RequireRole(EnumRoles.Admin.ToString()));
+
+options.AddPolicy("AdminOuLeitor", policy =>
+    policy.RequireRole(
+        EnumRoles.Admin.ToString(),
+        EnumRoles.Leitor.ToString()
+    ));
+options.AddPolicy("TodosAutenticados", policy =>
+    policy.RequireRole(
+
+        EnumRoles.Admin.ToString(),
+        EnumRoles.Bibli.ToString(),
+        EnumRoles.Leitor.ToString()
+        ));
+options.AddPolicy("AdminOuBibli", policy =>
+    policy.RequireRole(
+        EnumRoles.Admin.ToString(),
+        EnumRoles.Bibli.ToString()
+        ));
+});
+
+
+
+//Swagger
+
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -60,8 +105,8 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
         Description = "Exemplo: \"Bearer {token}\""
@@ -75,7 +120,9 @@ builder.Services.AddSwaggerGen(c =>
             },
             new string[] {}
         }
-    });
+    }
+    
+    );
 });
 
 
@@ -85,14 +132,21 @@ builder.Services.AddScoped<IConnectionHelper, ConnectionHelper>();
 builder.Services.AddScoped<IObrasRepository, ObrasRepository>();
 builder.Services.AddScoped<IObraService, ObraService>();
 builder.Services.AddScoped<IConnectionHelper, ConnectionHelper>();
+builder.Services.AddScoped<IUtilizadoresRepository, UtilizadoresRepository>();
+builder.Services.AddScoped<IUtilizadoresService, UtilizadoresService>();
+builder.Services.AddScoped<ILoginHelper, LoginHelper>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IMetricsRepository, MetricsRepository>();
+builder.Services.AddScoped<IMetricsService, MetricsService>();
 builder.Services.AddScoped<IAssuntoRepository, AssuntoRepository>();
 builder.Services.AddScoped<IExemplarService, ExemplarService>();    
 builder.Services.AddScoped<IExemplaresRepository,ExemplaresRepository>();
 
-builder.Services.AddAuthorization();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
 app.UseCors("cors");
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -146,9 +200,66 @@ app.MapPost("/Obras/Historico", (RequestHistObrasDTO dto, IObraService service) 
 })
 .RequireAuthorization();
 
-app.UseHttpsRedirection();
+app.MapPost("/login", (LoginDTO login, IAuthService auth) =>
+{
+    var token = auth.Login(login.UserName, login.Password);
+    if (string.IsNullOrEmpty(token))
+    {
+        return Results.Unauthorized();
+    }
 
-    
+    return Results.Ok(new { token });
+});
+
+app.MapPut("/Utilizadores/alterar_status", (AlterarStatusDTO dto, IUtilizadoresService service) =>
+{
+    service.AlterarStatus(dto.UtilizadorId, dto);
+
+    return Results.Ok(new { Mensagem = "Status alterado com sucesso" }); ;
+})
+    .RequireAuthorization("AdminOuBibli");
+
+app.MapDelete("/Utilizadores/limpar-antigos", (IUtilizadoresService service) =>
+{
+    service.DeleteLeitorAntigo();
+
+    return Results.Ok(new { Mensagem = "Leitores antigos deletados com sucesso" }); 
+})
+    .RequireAuthorization("AdminOuBibli"); ;
+
+app.MapPost("/Utilizadores/registrar-utilizador",
+    (RegistrarUtilizadorDTO dto, IUtilizadoresService service) =>
+    {
+        service.RegistrarUtilizador(dto);
+
+        return Results.Ok(new { Mensagem = "Utilizador registrado com sucesso" });
+    })
+.RequireAuthorization("TodosAutenticados");
+
+app.MapGet("/TopBooks", (DateTime dataInicio, DateTime dataFim, IMetricsService service) =>
+{
+    return Results.Ok(service.GetTopBooks(dataInicio, dataFim));
+})
+    .RequireAuthorization("TodosAutenticados");
+
+app.MapGet("/BottomBooks", (DateTime dataInicio, DateTime dataFim, IMetricsService service) =>
+{
+    return Results.Ok(service.GetBottomBooks(dataInicio, dataFim));
+})
+    .RequireAuthorization("TodosAutenticados");
+
+app.MapGet("/BottomEmprestimosNucleo", (DateTime dataInicio, DateTime dataFim, IMetricsService service) =>
+{
+    return Results.Ok(service.GetBottomEmprestimos(dataInicio, dataFim));
+})
+    .RequireAuthorization("TodosAutenticados");
+
+app.MapGet("/TopEmprestimosNucleo", (DateTime dataInicio, DateTime dataFim, IMetricsService service) =>
+{
+    return Results.Ok(service.GetTopEmprestimos(dataInicio, dataFim));
+})
+    .RequireAuthorization("TodosAutenticados");
 
 
 app.Run();
+
