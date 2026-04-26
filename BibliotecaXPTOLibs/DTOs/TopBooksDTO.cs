@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace BibliotecaXPTOLibs.DTOs
 {
-    public class CreateObraDTO
+    public class TopBooksDTO
     {
         public string Autor { get; set; }
         public string Titulo { get; set; }
-        public int Assunto_Id { get; set; }
+        public int TotalEmprestimos { get; set; }
     }
 }

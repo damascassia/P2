@@ -136,7 +136,7 @@ namespace BibliotecaXPTOLibs.Repositories
 
             if (obra is null) return false;
 
-            var assunto = _assuntoRepository.GetById(dto.Assunto_Id, tagRepo);
+            var assunto = _assuntoRepository.GetById((int)dto.Assunto_Id, tagRepo);
 
             if (assunto is null) return false;
 

@@ -16,4 +16,6 @@ namespace BlibliotecaXPTO_WebAPI.Services.Interfaces
 
         List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo, string assunto);
     }
-}
+
+    }
+

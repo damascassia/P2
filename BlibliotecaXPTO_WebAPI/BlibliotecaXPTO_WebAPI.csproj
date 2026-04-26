@@ -2,12 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
+	<RollForward>Major</RollForward>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Logs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="BibliotecaXPTOLibs.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,8 +28,8 @@
     <Reference Include="BibliotecaXPTOLibs">
       <HintPath>..\BibliotecaXPTOLibs\bin\Debug\net9.0\BibliotecaXPTOLibs.dll</HintPath>
     </Reference>
-    <Reference Include="LibDB">
-      <HintPath>..\..\..\..\..\..\UPSkill\LibDB\bin\Debug\net9.0\LibDB.dll</HintPath>
+    <Reference Include="DalProLib">
+      <HintPath>..\DalProLib\obj\Debug\net9.0\DalProLib.dll</HintPath>
     </Reference>
   </ItemGroup>
 
