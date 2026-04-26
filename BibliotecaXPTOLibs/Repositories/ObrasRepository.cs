@@ -243,5 +243,47 @@ namespace BibliotecaXPTOLibs.Repositories
                 throw new Exception($"Erro inesperado: {ex}");
             }
         }
+
+
+        public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string tagRepo, string nomeNucleo = null, string assunto = null)
+        {
+            string connection = _connectionHelper.getConnectionString(tagRepo);
+            try
+            {
+                if (string.IsNullOrEmpty(connection))
+                    throw new Exception($"Erro de Configuração: A tag '{tagRepo}' não possui uma ConnectionString válida.");
+
+                DalPro.ConnectionString = connection;
+
+                var dt = DalPro.ExecuteSP("sp_ObrasDisponiveis", new Dictionary<string, object>
+                {
+                    { "@NomeNucleo", nomeNucleo },
+                    { "@Assunto",    assunto    }
+                });
+
+                var lista = new List<ObraDisponivelDTO>();
+                foreach (System.Data.DataRow row in dt.Rows)
+                {
+                    lista.Add(new ObraDisponivelDTO
+                    {
+                        Titulo = row["Titulo"].ToString(),
+                        Autor = row["Autor"].ToString()
+                    });
+                }
+
+                return lista;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception($"Erro de base de dados: {ex.Message}");
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro inesperado:{ex.Message}");
+            }
+        }
     }
 }
+       
+

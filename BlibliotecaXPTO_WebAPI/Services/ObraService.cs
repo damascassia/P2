@@ -1,6 +1,7 @@
 ﻿using BibliotecaXPTOLibs.DTOs;
 using BibliotecaXPTOLibs.Repositories.Interfaces;
 using BlibliotecaXPTO_WebAPI.Services.Interfaces;
+using Microsoft.Data.SqlClient;
 
 namespace BlibliotecaXPTO_WebAPI.Services
 {
@@ -9,10 +10,14 @@ namespace BlibliotecaXPTO_WebAPI.Services
         private readonly IObrasRepository _repoObras;
 
         private readonly string _activeTag;
-        public ObraService(IObrasRepository obrasRepository, IConfiguration config)
+
+        private readonly ILogger<ObraService> _logger;   
+
+        public ObraService(IObrasRepository obrasRepository, IConfiguration config, ILogger<ObraService> logger)
         {
             _repoObras = obrasRepository;
             _activeTag = config.GetValue<string>("Settings:ActiveTag");
+            _logger = logger;
         }
 
         public List<HistObrasDTO> GetHistorico(RequestHistObrasDTO dto)
@@ -20,11 +25,18 @@ namespace BlibliotecaXPTO_WebAPI.Services
             return _repoObras.GetHistorico(dto, _activeTag);
         }
 
+
         public int Create(CreateObraDTO dto)
         {
             return _repoObras.Insert(dto, _activeTag);
         }
 
+    
+        public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo, string assunto)
+        {
+            _logger.LogInformation($"Pesquisa obras: nucleo={nomeNucleo} assunto={assunto}");
+            return _repoObras.PesquisarObrasDisponiveis(_activeTag, nomeNucleo, assunto);
+        }
         public bool Update(int id, CreateObraDTO dto)
         {
             return _repoObras.Update(id, dto, _activeTag);
@@ -40,5 +52,7 @@ namespace BlibliotecaXPTO_WebAPI.Services
             return _repoObras.Delete(id, _activeTag);
 
         }
+
+   
     }
-}
+    }

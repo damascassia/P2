@@ -13,5 +13,9 @@ namespace BlibliotecaXPTO_WebAPI.Services.Interfaces
         int UpdateCount(int id);
 
         bool Delete(int id);
+
+        List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo, string assunto);
     }
-}
+
+    }
+
