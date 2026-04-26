@@ -53,6 +53,10 @@ namespace BlibliotecaXPTO_WebAPI.Services
 
         }
 
-   
+        public List<ObraDisponivelDTO> PesquisarObrasDisponiveis(string nomeNucleo, string assunto)
+        {
+            _logger.LogInformation($"Pesquisa obras: nucleo={nomeNucleo} assunto={assunto}");
+            return _repoObras.PesquisarObrasDisponiveis(_activeTag, nomeNucleo, assunto);
+        }
     }
-    }
+}

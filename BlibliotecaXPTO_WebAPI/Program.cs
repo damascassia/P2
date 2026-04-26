@@ -1,4 +1,5 @@
-﻿using BibliotecaXPTOLibs.DTOs;
+﻿using System.Text;
+using BibliotecaXPTOLibs.DTOs;
 using BibliotecaXPTOLibs.Helpers;
 using BibliotecaXPTOLibs.Helpers.Interfaces;
 using BibliotecaXPTOLibs.Models;
@@ -16,7 +17,10 @@ using System.Security.Claims;
 using System.Text;
 
 
-//Logger
+
+
+
+
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -209,6 +213,13 @@ app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, IObraService 
     .RequireAuthorization("TodosAutenticados")
     .WithSummary("Pesquisa as obras por núcleo")
     .WithDescription("Este endepoint recebe nome do núcleo e o assunto tipo string e retorna uma lista das obras daquele assunto disponíveis naquele núcleo.");
+
+app.MapGet("/obras/disponiveis", (string? nucleo, string? assunto, IObraService service) =>
+{
+    var obras = service.PesquisarObrasDisponiveis(nucleo, assunto);
+    return Results.Ok(obras);
+})
+.RequireAuthorization();
 
 app.MapPut("/Exemplares/ChangeNucleo", (ChangeNucleoDTO dto, IExemplarService service) =>
 {
